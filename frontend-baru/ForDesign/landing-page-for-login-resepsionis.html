@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlTag">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Buku Tamu - Feedback Tamu</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <script id="tailwind-config">
+      // Initial Theme Check - Prevent Flash
+      if (
+        localStorage.getItem("theme") === "dark" ||
+        (!localStorage.getItem("theme") &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f5f7ff",
+                100: "#ebf0fe",
+                200: "#dae3fd",
+                300: "#c0cdfb",
+                400: "#9baaf7",
+                500: "#6366f1", // Indigo 500
+                600: "#4f46e5",
+                700: "#4338ca",
+                800: "#3730a3",
+                900: "#312e81",
+              },
+              secondary: "#64748b",
+              background: {
+                light: "#f8fafc",
+                dark: "#0f172a", // Slate 900
+              },
+              surface: {
+                light: "#ffffff",
+                dark: "#1e293b", // Slate 800
+              },
+            },
+            fontFamily: {
+              display: ["Outfit", "sans-serif"],
+              body: ["Plus Jakarta Sans", "sans-serif"],
+            },
+            boxShadow: {
+              glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+              "glass-dark": "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+
+        50% {
+          transform: translateY(-10px);
+        }
+
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .star-rating button {
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .star-rating button:hover {
+        transform: scale(1.2);
+      }
+
+      .star-active {
+        color: #fbbf24 !important;
+        font-variation-settings: "FILL" 1;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark font-body text-slate-900 dark:text-slate-100 transition-colors duration-300"
+  >
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+      <!-- Navigation -->
+      <header
+        class="sticky top-0 z-50 border-slate-200 dark:border-slate-800 px-6 md:px-12 py-4 shadow-sm transition-colors duration-300"
+      >
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl shadow-md dark:shadow-none">
+              <img
+                src="assets/images/loader.gif"
+                alt="Logo"
+                class="h-8 w-8 rounded-md bg-white"
+              />
+            </div>
+            <span
+              class="text-xl font-display font-extrabold tracking-tight text-slate-800 dark:text-white"
+            >
+              BuTaKa
+            </span>
+          </div>
+          <div class="flex items-center gap-4 md:gap-8">
+            <!-- Theme Toggle Button -->
+            <button
+              id="themeToggle"
+              class="p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+            >
+              <span class="material-symbols-outlined block dark:hidden"
+                >dark_mode</span
+              >
+              <span class="material-symbols-outlined hidden dark:block"
+                >light_mode</span
+              >
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 flex flex-col items-center py-12 px-6 md:px-12">
+        <div class="w-full max-w-6xl space-y-16">
+          <div
+            class="w-full bg-white dark:bg-surface-dark rounded-[1rem] shadow-glass dark:shadow-glass-dark border border-slate-100 dark:border-slate-800 transition-colors duration-300 overflow-hidden"
+            data-aos="fade-up"
+          >
+            <div
+              class="p-6 md:p-8 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50"
+            >
+              <div
+                class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+              >
+                <div>
+                  <h2
+                    class="text-xl font-display font-bold text-slate-800 dark:text-white"
+                  >
+                    Daftar Kunjungan Terbaru
+                  </h2>
+                  <p
+                    class="text-xs text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider font-semibold"
+                  >
+                    Data real-time tamu hari ini
+                  </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                  <!-- Search Bar -->
+                  <div class="relative flex-grow md:flex-grow-0">
+                    <span
+                      class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-sm"
+                      >search</span
+                    >
+                    <input
+                      type="text"
+                      id="visitorSearch"
+                      class="w-full md:w-64 pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:ring-2 focus:ring-primary-500/20 transition-all"
+                      placeholder="Cari nama atau instansi..."
+                    />
+                  </div>
+                  <div
+                    class="flex items-center gap-2 px-3 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg text-[10px] font-bold uppercase tracking-tighter"
+                  >
+                    <span class="relative flex h-2 w-2">
+                      <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"
+                      ></span>
+                      <span
+                        class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"
+                      ></span>
+                    </span>
+                    Live Records
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-separate">
+                <thead>
+                  <tr class="bg-slate-50/50 dark:bg-slate-900/50">
+                    <th
+                      class="px-6 py-4 text-[11px] font-extrabold text-slate-900 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800"
+                    >
+                      No
+                    </th>
+                    <th
+                      class="px-6 py-4 text-[11px] font-extrabold text-slate-900 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800"
+                    >
+                      Nama Tamu
+                    </th>
+                    <th
+                      class="px-6 py-4 text-[11px] font-extrabold text-slate-900 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800"
+                    >
+                      Keperluan
+                    </th>
+                    <th
+                      class="px-6 py-4 text-[11px] font-extrabold text-slate-900 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800"
+                    >
+                      Waktu Masuk
+                    </th>
+                    <th
+                      class="px-6 py-4 text-[11px] font-extrabold text-slate-900 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800"
+                    >
+                      Status
+                    </th>
+                    <th
+                      class="px-6 py-4 text-[11px] font-extrabold text-slate-900 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800"
+                    >
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+                  <tr
+                    class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group"
+                  >
+                    <td
+                      class="px-6 py-5 text-sm border border-slate-300 dark:border-slate-600 font-medium text-slate-900 dark:text-slate-600"
+                    >
+                      01
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <div class="flex items-center gap-3">
+                        <div class="text-slate-900 dark:text-slate-200">
+                          <p class="text-sm font-bold visitor-name">
+                            Budi Santoso
+                          </p>
+                          <p
+                            class="text-[10px] text-slate-500 visitor-instansi bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded mt-1 inline-block"
+                          >
+                            PT. Maju Mundur
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <p class="text-sm">Rapat Koordinasi</p>
+                      <p class="text-[10px] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]"
+                          >person</span
+                        >
+                        Menemui: Andi Pratama
+                      </p>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <p
+                        class="text-sm font-medium text-slate-600 dark:text-slate-400"
+                      >
+                        08:30
+                      </p>
+                      <p class="text-[10px] text-slate-400 dark:text-slate-500">
+                        14 Jan 2026
+                      </p>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <span
+                        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-emerald-300 text-emerald-900"
+                      >
+                        Selesai
+                      </span>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <div class="justify-center gap-2"></div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group"
+                  >
+                    <td
+                      class="px-6 py-5 border border-slate-300 dark:border-slate-600 text-sm font-medium text-slate-900 dark:text-slate-600"
+                    >
+                      02
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <div class="flex items-center gap-3">
+                        <div class="text-slate-900 dark:text-slate-200">
+                          <p class="text-sm font-bold visitor-name">
+                            Ani Wijaya
+                          </p>
+                          <p
+                            class="text-[10px] text-slate-500 visitor-instansi bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded mt-1 inline-block"
+                          >
+                            Individu
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <p class="text-sm">Kunjungan Personal</p>
+                      <p class="text-[10px] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]"
+                          >person</span
+                        >
+                        Menemui: Siska Amalia
+                      </p>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <p
+                        class="text-sm font-medium text-slate-600 dark:text-slate-400"
+                      >
+                        10:15
+                      </p>
+                      <p class="text-[10px] text-slate-400 dark:text-slate-500">
+                        14 Jan 2026
+                      </p>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <span
+                        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-yellow-300 text-yellow-900"
+                      >
+                        Menunggu
+                      </span>
+                    </td>
+                    <td class="px-6 py-5 border border-slate-300 dark:border-slate-600">
+                      <div class="justify-center gap-2">
+                        <button
+                          class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[10px] font-bold transition-all flex items-center gap-1"
+                        >
+                          <span class="material-symbols-outlined text-xs"
+                            >logout</span
+                          >
+                          Check-out
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer
+        class="py-12 border-t border-slate-200 dark:border-slate-800 text-center transition-colors duration-300"
+      >
+        <p class="text-slate-400 dark:text-slate-500 text-sm font-medium">
+          © 2025 BuTaKa. All rights reserved.
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      AOS.init();
+    </script>
+
+    <script>
+      // Theme Toggle Logic
+      const themeToggle = document.getElementById("themeToggle");
+      const htmlTag = document.getElementById("htmlTag");
+
+      themeToggle.addEventListener("click", () => {
+        if (htmlTag.classList.contains("dark")) {
+          htmlTag.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        } else {
+          htmlTag.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        }
+      });
+
+      // Interactive Star Rating Logic
+      const stars = document.querySelectorAll("#starRating button");
+      const ratingInput = document.getElementById("ratingInput");
+      const ratingLabel = document.getElementById("ratingLabel");
+      const labels = [
+        "Sangat Buruk",
+        "Buruk",
+        "Biasa Saja",
+        "Sangat Baik",
+        "Luar Biasa!",
+      ];
+
+      stars.forEach((star, index) => {
+        star.addEventListener("click", () => {
+          const value = star.getAttribute("data-value");
+          ratingInput.value = value;
+          updateStars(index);
+          ratingLabel.textContent = labels[index];
+          ratingLabel.classList.add(
+            "text-primary-600",
+            "dark:text-primary-400"
+          );
+        });
+
+        star.addEventListener("mouseenter", () => {
+          updateStars(index);
+          ratingLabel.textContent = labels[index];
+        });
+
+        star.addEventListener("mouseleave", () => {
+          const currentVal = parseInt(ratingInput.value);
+          if (currentVal > 0) {
+            updateStars(currentVal - 1);
+            ratingLabel.textContent = labels[currentVal - 1];
+          } else {
+            stars.forEach((s) =>
+              s.querySelector("span").classList.remove("star-active")
+            );
+            ratingLabel.textContent = "Pilih Bintang";
+          }
+        });
+      });
+
+      function updateStars(index) {
+        stars.forEach((s, idx) => {
+          const icon = s.querySelector("span");
+          if (idx <= index) {
+            icon.classList.add("star-active");
+          } else {
+            icon.classList.remove("star-active");
+          }
+        });
+      }
+
+      // Notification for success
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("success")) {
+        const successType = urlParams.get("success");
+        let title = "Berhasil!";
+        let text = "Terima kasih telah mengisi buku tamu.";
+
+        if (successType === "register") {
+          text = "Kunjungan Anda telah berhasil didaftarkan. Selamat datang!";
+        } else if (successType === "checkout") {
+          text = "Tamu telah berhasil check-out.";
+        } else if (successType === "deleted") {
+          text = "Data kunjungan telah berhasil dihapus.";
+        } else if (successType === "1") {
+          text = "Feedback Anda telah terkirim. Terima kasih!";
+        }
+
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: "success",
+          confirmButtonColor: "#0f172a",
+          timer: 4000,
+        });
+        // Clean up URL
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
+    </script>
+    <!-- Scripts for interaction (placed after element) -->
+    <script>
+      // Simple Real-time Search
+      document
+        .getElementById("visitorSearch")
+        .addEventListener("input", function (e) {
+          const term = e.target.value.toLowerCase();
+          const rows = document.querySelectorAll("tbody tr");
+
+          rows.forEach((row) => {
+            const name =
+              row.querySelector(".visitor-name")?.textContent.toLowerCase() ||
+              "";
+            const instansi =
+              row
+                .querySelector(".visitor-instansi")
+                ?.textContent.toLowerCase() || "";
+            if (name.includes(term) || instansi.includes(term)) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        });
+
+      // Checkout Confirmation
+      function confirmCheckout(id, name) {
+        Swal.fire({
+          title: "Check-out Tamu?",
+          text: `${name} akan ditandai telah selesai berkunjung.`,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#10b981",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Check-out",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `functions/checkout_guest.php?id=${id}`;
+          }
+        });
+      }
+
+      // Delete Confirmation
+      function confirmDelete(id, name) {
+        Swal.fire({
+          title: "Hapus Data?",
+          text: `Data kunjungan ${name} akan dihapus permanen.`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#e11d48",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Hapus",
+          cancelButtonText: "Batal",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `functions/delete_guest.php?id=${id}`;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

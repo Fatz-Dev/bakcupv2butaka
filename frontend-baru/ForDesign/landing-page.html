@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlTag">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Buku Tamu - Feedback Tamu</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet" />
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <script id="tailwind-config">
+      // Initial Theme Check - Prevent Flash
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+      } else {
+            document.documentElement.classList.remove('dark');
+      }
+
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f5f7ff",
+                100: "#ebf0fe",
+                200: "#dae3fd",
+                300: "#c0cdfb",
+                400: "#9baaf7",
+                500: "#6366f1", // Indigo 500
+                600: "#4f46e5",
+                700: "#4338ca",
+                800: "#3730a3",
+                900: "#312e81",
+              },
+                        secondary: '#64748b',
+              background: {
+                light: "#f8fafc",
+                dark: "#0f172a", // Slate 900
+              },
+              surface: {
+                light: "#ffffff",
+                dark: "#1e293b", // Slate 800
+              },
+            },
+            fontFamily: {
+              display: ["Outfit", "sans-serif"],
+              body: ["Plus Jakarta Sans", "sans-serif"],
+            },
+            boxShadow: {
+              glass: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
+              "glass-dark": "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .dark .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+
+        50% {
+          transform: translateY(-10px);
+        }
+
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .star-rating button {
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .star-rating button:hover {
+        transform: scale(1.2);
+      }
+
+      .star-active {
+        color: #fbbf24 !important;
+        font-variation-settings: "FILL" 1;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark font-body text-slate-900 dark:text-slate-100 transition-colors duration-300"
+  >
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+      <!-- Navigation -->
+      <header
+        class="sticky top-0 z-50 border-slate-200 dark:border-slate-800 px-6 md:px-12 py-4 shadow-sm transition-colors duration-300"
+      >
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl shadow-md dark:shadow-none">
+              <img
+                src="assets/images/loader.gif"
+                alt="Logo"
+                class="h-8 w-8 rounded-md bg-white"
+              />
+            </div>
+            <span
+              class="text-xl font-display font-extrabold tracking-tight text-slate-800 dark:text-white"
+            >
+              BuTaKa
+            </span>
+          </div>
+          <div class="flex items-center gap-4 md:gap-8">
+            <!-- Theme Toggle Button -->
+            <button
+              id="themeToggle"
+              class="p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+            >
+              <span class="material-symbols-outlined block dark:hidden"
+                >dark_mode</span
+              >
+              <span class="material-symbols-outlined hidden dark:block"
+                >light_mode</span
+              >
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 flex flex-col items-center py-12 px-6 md:px-12">
+        <div class="w-full max-w-6xl space-y-16">
+          <!-- Hero Section Enhanced -->
+          <!-- <section data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500" class="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-surface-dark rounded-[1rem] p-8 md:p-12 shadow-glass dark:shadow-glass-dark border border-slate-100 dark:border-slate-800 transition-colors duration-300 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary-100 dark:bg-primary-900/20 rounded-full blur-3xl opacity-50"></div>
+                    <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-violet-100 dark:bg-violet-900/20 rounded-full blur-3xl opacity-50"></div>
+
+                    <div class="space-y-8 relative z-10">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-xs font-bold tracking-wider uppercase">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                            </span>
+                            Suara Anda Berarti
+                        </div>
+                        <h1 class="text-5xl md:text-6xl font-display font-extrabold leading-[1.1] text-slate-900 dark:text-white">
+                            Bagikan <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-violet-600 dark:from-primary-400 dark:to-violet-400">Pengalaman</span> Anda di Sini.
+                        </h1>
+                        <p class="text-lg text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+                            Kritik, saran, dan masukan Anda membantu kami bertumbuh menjadi lebih baik. Terima kasih telah menjadi bagian dari perjalanan kami.
+                        </p>
+                        <div class="flex items-center gap-4 pt-4">
+                            <div class="flex -space-x-3">
+                                <img src="https://i.pravatar.cc/100?u=1" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800" />
+                                <img src="https://i.pravatar.cc/100?u=2" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800" />
+                                <img src="https://i.pravatar.cc/100?u=3" class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800" />
+                            </div>
+                            <span class="text-sm font-medium text-slate-400">Dipercaya oleh 1,000+ tamu</span>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <div class="absolute -inset-4 bg-gradient-to-tr from-primary-200 to-violet-200 dark:from-primary-500/10 dark:to-violet-500/10 rounded-[2rem] blur-xl opacity-30 group-hover:opacity-50 transition duration-1000"></div>
+                        <div class="relative rounded-[2rem] overflow-hidden shadow-2xl animate-float">
+                            <img src="assets/images/loader.gif" alt="Illustration" class="w-full bg-slate-50 dark:bg-slate-900" />
+                        </div>
+                    </div>
+                </section> -->
+
+          <!-- <section id="receptionist-section">
+                    Content from resepsionis/index.php would go here for receptionists
+                </section> -->
+
+          <!-- form isi buku tamu -->
+          <div class="grid md:grid-cols-3 gap-12">
+            <!-- Left Column: Feedback Form -->
+            <div class="md:col-span-3">
+              <div
+                class="bg-white dark:bg-surface-dark rounded-[1rem] shadow-glass dark:shadow-glass-dark border border-slate-100 dark:border-slate-800 transition-colors duration-300 overflow-hidden"
+              >
+                <div
+                  class="p-8 md:p-10 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50"
+                >
+                  <h2
+                    class="text-2xl font-display font-bold text-slate-800 dark:text-white"
+                  >
+                    Isi Buku Tamu
+                  </h2>
+                  <p class="text-slate-500 dark:text-slate-400 mt-1">
+                    Silakan lengkapi data kunjungan Anda
+                  </p>
+                </div>
+
+                <form
+                  id="guestForm"
+                  action="functions/submit_guest.php"
+                  method="POST"
+                  class="p-8 md:p-10 space-y-8"
+                >
+                  <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                      <label
+                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                        >Nama Lengkap</label
+                      >
+                      <div class="relative group">
+                        <span
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                          >person</span
+                        >
+                        <input
+                          type="text"
+                          name="nama"
+                          class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                          placeholder="Nama lengkap Anda"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="space-y-2">
+                      <label
+                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                        >Instansi / Perusahaan</label
+                      >
+                      <div class="relative group">
+                        <span
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                          >apartment</span
+                        >
+                        <input
+                          type="text"
+                          name="instansi"
+                          class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                          placeholder="Organisasi atau pribadi"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                      <label
+                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                        >Nomor Telepon / WA</label
+                      >
+                      <div class="relative group">
+                        <span
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                          >call</span
+                        >
+                        <input
+                          type="tel"
+                          name="telepon"
+                          class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                          placeholder="0812xxxx"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="space-y-2">
+                      <label
+                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                        >Email (Opsional)</label
+                      >
+                      <div class="relative group">
+                        <span
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                          >mail</span
+                        >
+                        <input
+                          type="email"
+                          name="email"
+                          class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                          placeholder="nama@email.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label
+                      class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                      >Menemui (Pejabat / Staf)</label
+                    >
+                    <div class="relative group">
+                      <span
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                        >person_search</span
+                      >
+                      <input
+                        type="text"
+                        name="tujuan_staf"
+                        class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                        placeholder="Siapa yang ingin Anda temui?"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label
+                      class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                      >Keperluan Kunjungan</label
+                    >
+                    <textarea
+                      name="keperluan"
+                      class="w-full p-6 bg-slate-50 dark:bg-slate-900 border-none rounded-3xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 min-h-[120px]"
+                      placeholder="Berikan alasan atau detail kunjungan Anda..."
+                      required
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full py-5 bg-slate-900 dark:bg-primary-900/80 hover:bg-slate-800 dark:hover:bg-primary-900/60 text-white font-extrabold rounded-2xl shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                  >
+                    <span class="material-symbols-outlined">how_to_reg</span>
+                    Daftar Kunjungan Sekarang
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- feedback -->
+          <div class="grid md:grid-cols-3 gap-12">
+            <!-- Left Column: Feedback Form -->
+            <div class="md:col-span-3">
+              <div
+                class="bg-white dark:bg-surface-dark rounded-[1rem] shadow-glass dark:shadow-glass-dark border border-slate-100 dark:border-slate-800 transition-colors duration-300 overflow-hidden"
+              >
+                <div
+                  class="p-8 md:p-10 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50"
+                >
+                  <h2
+                    class="text-2xl font-display font-bold text-slate-800 dark:text-white"
+                  >
+                    Tulis Feedback
+                  </h2>
+                  <p class="text-slate-500 dark:text-slate-400 mt-1">
+                    Hanya butuh waktu sebentar
+                  </p>
+                </div>
+
+                <form
+                  id="feedbackForm"
+                  action="functions/submit_feedback.php"
+                  method="POST"
+                  class="p-8 md:p-10 space-y-8"
+                >
+                  <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                      <label
+                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                        >Nama Lengkap</label
+                      >
+                      <div class="relative group">
+                        <span
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                          >person</span
+                        >
+                        <input
+                          type="text"
+                          name="nama"
+                          class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                          placeholder="Masukkan nama Anda"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="space-y-2">
+                      <label
+                        class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                        >Instansi / Perusahaan</label
+                      >
+                      <div class="relative group">
+                        <span
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined transition-colors group-focus-within:text-primary-600 dark:group-focus-within:text-primary-400"
+                          >apartment</span
+                        >
+                        <input
+                          type="text"
+                          name="instansi"
+                          class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border-none rounded-2xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                          placeholder="Pekerjaan atau organisasi"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="space-y-3 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800"
+                  >
+                    <label
+                      class="text-sm font-bold text-slate-700 dark:text-slate-300 block text-center"
+                      >Bagaimana kualitas layanan kami?</label
+                    >
+                    <div
+                      class="flex justify-center gap-3 star-rating"
+                      id="starRating"
+                    >
+                      <button
+                        type="button"
+                        data-value="1"
+                        class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all"
+                      >
+                        <span class="material-symbols-outlined text-[42px]"
+                          >star</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        data-value="2"
+                        class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all"
+                      >
+                        <span class="material-symbols-outlined text-[42px]"
+                          >star</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        data-value="3"
+                        class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all"
+                      >
+                        <span class="material-symbols-outlined text-[42px]"
+                          >star</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        data-value="4"
+                        class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all"
+                      >
+                        <span class="material-symbols-outlined text-[42px]"
+                          >star</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        data-value="5"
+                        class="text-slate-300 dark:text-slate-700 hover:text-amber-400 transition-all"
+                      >
+                        <span class="material-symbols-outlined text-[42px]"
+                          >star</span
+                        >
+                      </button>
+                    </div>
+                    <input
+                      type="hidden"
+                      name="rating"
+                      id="ratingInput"
+                      value="0"
+                    />
+                    <p
+                      class="text-xs text-slate-400 dark:text-slate-500 text-center uppercase tracking-widest font-bold pt-2"
+                      id="ratingLabel"
+                    >
+                      Pilih Bintang
+                    </p>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label
+                      class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1"
+                      >Pesan Feedback</label
+                    >
+                    <textarea
+                      name="pesan"
+                      class="w-full p-6 bg-slate-50 dark:bg-slate-900 border-none rounded-3xl focus:ring-2 focus:ring-primary-500/20 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 min-h-[160px]"
+                      placeholder="Bagikan apa yang Anda rasakan selama berkunjung..."
+                      required
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full py-5 bg-primary-900/80 dark:bg-primary-900/80 hover:bg-primary-900/60 dark:hover:bg-primary-900/60 text-white font-extrabold rounded-2xl shadow-xl shadow-primary-200 dark:shadow-none transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                  >
+                    <span class="material-symbols-outlined">send</span>
+                    Kirim Feedback Sekarang
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <footer
+        class="py-12 border-t border-slate-200 dark:border-slate-800 text-center transition-colors duration-300"
+      >
+        <p class="text-slate-400 dark:text-slate-500 text-sm font-medium">
+          © 2025 BuTaKa. All rights reserved.
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      AOS.init();
+    </script>
+
+    <script>
+      // Theme Toggle Logic
+      const themeToggle = document.getElementById("themeToggle");
+      const htmlTag = document.getElementById("htmlTag");
+
+      themeToggle.addEventListener("click", () => {
+        if (htmlTag.classList.contains("dark")) {
+          htmlTag.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        } else {
+          htmlTag.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        }
+      });
+
+      // Interactive Star Rating Logic
+      const stars = document.querySelectorAll("#starRating button");
+      const ratingInput = document.getElementById("ratingInput");
+      const ratingLabel = document.getElementById("ratingLabel");
+      const labels = [
+        "Sangat Buruk",
+        "Buruk",
+        "Biasa Saja",
+        "Sangat Baik",
+        "Luar Biasa!",
+      ];
+
+      stars.forEach((star, index) => {
+        star.addEventListener("click", () => {
+          const value = star.getAttribute("data-value");
+          ratingInput.value = value;
+          updateStars(index);
+          ratingLabel.textContent = labels[index];
+          ratingLabel.classList.add(
+            "text-primary-600",
+            "dark:text-primary-400"
+          );
+        });
+
+        star.addEventListener("mouseenter", () => {
+          updateStars(index);
+          ratingLabel.textContent = labels[index];
+        });
+
+        star.addEventListener("mouseleave", () => {
+          const currentVal = parseInt(ratingInput.value);
+          if (currentVal > 0) {
+            updateStars(currentVal - 1);
+            ratingLabel.textContent = labels[currentVal - 1];
+          } else {
+            stars.forEach((s) =>
+              s.querySelector("span").classList.remove("star-active")
+            );
+            ratingLabel.textContent = "Pilih Bintang";
+          }
+        });
+      });
+
+      function updateStars(index) {
+        stars.forEach((s, idx) => {
+          const icon = s.querySelector("span");
+          if (idx <= index) {
+            icon.classList.add("star-active");
+          } else {
+            icon.classList.remove("star-active");
+          }
+        });
+      }
+
+      // Notification for success
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("success")) {
+        const successType = urlParams.get("success");
+        let title = "Berhasil!";
+        let text = "Terima kasih telah mengisi buku tamu.";
+
+        if (successType === "register") {
+          text = "Kunjungan Anda telah berhasil didaftarkan. Selamat datang!";
+        } else if (successType === "checkout") {
+          text = "Tamu telah berhasil check-out.";
+        } else if (successType === "deleted") {
+          text = "Data kunjungan telah berhasil dihapus.";
+        } else if (successType === "1") {
+          text = "Feedback Anda telah terkirim. Terima kasih!";
+        }
+
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: "success",
+          confirmButtonColor: "#0f172a",
+          timer: 4000,
+        });
+        // Clean up URL
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
+    </script>
+  </body>
+</html>

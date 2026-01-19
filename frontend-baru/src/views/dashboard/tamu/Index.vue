@@ -26,12 +26,20 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(tamu, index) in tamuList" :key="tamu.id">
+                  <tr v-if="loading">
+                    <td colspan="7" class="text-center py-4">
+                      <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                      Memuat data tamu...
+                    </td>
+                  </tr>
+                  <tr v-else v-for="(tamu, index) in tamuList" :key="tamu.id">
                     <td>{{ index + 1 }}</td>
-                    <td><strong>{{ tamu.nama }}</strong></td>
-                    <td>{{ tamu.instansi }}</td>
-                    <td>{{ tamu.keperluan }}</td>
-                    <td>{{ tamu.waktuMasuk }}</td>
+                    <td>
+                      <strong>{{ tamu.name }}</strong>
+                    </td>
+                    <td>{{ tamu.institution || "Individu" }}</td>
+                    <td>{{ tamu.purpose }}</td>
+                    <td>{{ formatTime(tamu.check_in_time) }}</td>
                     <td>
                       <span class="badge text-uppercase" :class="getStatusClass(tamu.status)">
                         {{ tamu.status }}
@@ -48,8 +56,10 @@
                       </div>
                     </td>
                   </tr>
-                  <tr v-if="tamuList.length === 0">
-                    <td colspan="7" class="text-center text-muted py-4">Tidak ada data tamu.</td>
+                  <tr v-if="!loading && tamuList.length === 0">
+                    <td colspan="7" class="text-center text-muted py-4">
+                      Tidak ada data tamu.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -62,25 +72,81 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from "vue";
+import api from "@/services/api";
+import { useToast } from "@/components/ui/toast/use-toast";
+import swal from "@/lib/swal";
 
-const tamuList = ref([
-  { id: 1, nama: 'Budi Santoso', instansi: 'PT. Maju Jaya', keperluan: 'Meeting dengan HRD', waktuMasuk: '08:00 WIB', status: 'selesai' },
-  { id: 2, nama: 'Siti Aminah', instansi: 'Individu', keperluan: 'Mengantar Paket', waktuMasuk: '09:30 WIB', status: 'berkunjung' }
-]);
+const { toast } = useToast();
+const tamuList = ref([]);
+const loading = ref(false);
+
+const fetchTamu = async () => {
+  loading.value = true;
+  try {
+    const response = await api.get("/visitors");
+    if (response.data.success) {
+      tamuList.value = response.data.data;
+    }
+  } catch (error) {
+    console.error("Error fetching tamu:", error);
+    toast({
+      title: "Error",
+      description: "Gagal mengambil data tamu",
+      variant: "destructive",
+    });
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchTamu();
+});
+
+const formatTime = (dateStr) => {
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return (
+    date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) +
+    " WIB"
+  );
+};
 
 const getStatusClass = (status) => {
   const classes = {
-    selesai: 'bg-success',
-    berkunjung: 'bg-info',
-    menunggu: 'bg-warning'
+    selesai: "bg-success",
+    berkunjung: "bg-info",
+    menunggu: "bg-warning",
   };
-  return classes[status] || 'bg-secondary';
+  return classes[status] || "bg-secondary";
 };
 
-const confirmDelete = (tamu) => {
-  if (confirm(`Hapus tamu "${tamu.nama}"?`)) {
-    tamuList.value = tamuList.value.filter(t => t.id !== tamu.id);
+const confirmDelete = async (tamu) => {
+  const result = await swal.confirm(
+    `Hapus tamu "${tamu.name}"?`,
+    "Data ini akan dihapus secara permanen.",
+    "Ya, Hapus!"
+  );
+
+  if (result.isConfirmed) {
+    try {
+      const response = await api.delete(`/visitors/${tamu.id}`);
+      if (response.data.success) {
+        toast({
+          title: "Berhasil",
+          description: "Data tamu berhasil dihapus",
+        });
+        fetchTamu();
+      }
+    } catch (error) {
+      console.error("Error deleting tamu:", error);
+      toast({
+        title: "Gagal",
+        description: "Gagal menghapus data tamu",
+        variant: "destructive",
+      });
+    }
   }
 };
 </script>

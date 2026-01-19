@@ -8,11 +8,6 @@ use App\Http\Controllers\Api\VisitorController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\DashboardController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
 
 // Public Routes
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -22,6 +17,9 @@ Route::post('/visitors', [VisitorController::class, 'store']);
 
 // Feedback Public Routes
 Route::post('/feedback', [FeedbackController::class, 'store']);
+
+// Public Dashboard Data (for Landing Page)
+Route::get('/visitors/recent', [DashboardController::class, 'recentVisitors']);
 
 // Protected Routes (Sanctum Auth)
 Route::middleware('auth:sanctum')->group(function () {

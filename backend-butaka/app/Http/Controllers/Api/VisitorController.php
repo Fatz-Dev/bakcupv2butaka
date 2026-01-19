@@ -13,9 +13,7 @@ class VisitorController extends Controller
 {
     use ApiResponse;
 
-    /**
-     * Display a listing of the resource.
-     */
+    // Mengambil semua data tamu.
     public function index(Request $request): JsonResponse
     {
         $query = Visitor::latest();
@@ -38,9 +36,7 @@ class VisitorController extends Controller
         return $this->success($query->get());
     }
 
-    /**
-     * Store a newly created resource in storage (Check-in).
-     */
+    //  tamu baru.
     public function store(StoreVisitorRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -49,32 +45,30 @@ class VisitorController extends Controller
 
         $visitor = Visitor::create($validated);
 
-        return $this->success($visitor, 'Welcome! Please wait to be called.', 201);
+        return $this->success($visitor, 'Selamat datang! Harap menunggu dipanggil.', 201);
     }
 
     /**
-     * Display the specified resource.
+     * data tamu spesifik.
      */
     public function show(string $id): JsonResponse
     {
         $visitor = Visitor::find($id);
 
         if (!$visitor) {
-            return $this->error('Visitor not found', 404);
+            return $this->error('Data tamu tidak ditemukan', 404);
         }
 
         return $this->success($visitor);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update data tamu.
     public function update(Request $request, string $id): JsonResponse
     {
         $visitor = Visitor::find($id);
 
         if (!$visitor) {
-            return $this->error('Visitor not found', 404);
+            return $this->error('Data tamu tidak ditemukan', 404);
         }
 
         $validated = $request->validate([
@@ -89,18 +83,16 @@ class VisitorController extends Controller
 
         $visitor->update($validated);
 
-        return $this->success($visitor, 'Visitor updated successfully');
+        return $this->success($visitor, 'Data tamu berhasil di update');
     }
 
-    /**
-     * Update visitor status.
-     */
+    // Update status tamu.
     public function updateStatus(Request $request, string $id): JsonResponse
     {
         $visitor = Visitor::find($id);
 
         if (!$visitor) {
-            return $this->error('Visitor not found', 404);
+            return $this->error('Data tamu tidak ditemukan', 404);
         }
 
         $validated = $request->validate([
@@ -109,29 +101,27 @@ class VisitorController extends Controller
 
         $updateData = ['status' => $validated['status']];
 
-        // If status changed to 'selesai', set check_out_time
+        // Jika status menjadi selesai dan check_out_time belum diisi, maka akan diisi dengan waktu sekarang.
         if ($validated['status'] === 'selesai' && !$visitor->check_out_time) {
             $updateData['check_out_time'] = now();
         }
 
         $visitor->update($updateData);
 
-        return $this->success($visitor, 'Visitor status updated successfully');
+        return $this->success($visitor, 'Status tamu berhasil diubah');
     }
 
-    /**
-     * Checkout visitor (status -> selesai).
-     */
+    // Checkout tamu.
     public function checkout(string $id): JsonResponse
     {
         $visitor = Visitor::find($id);
 
         if (!$visitor) {
-            return $this->error('Visitor not found', 404);
+            return $this->error('Data tamu tidak ditemukan', 404);
         }
 
         if ($visitor->status === 'selesai') {
-            return $this->error('Visitor already checked out', 400);
+            return $this->error('Tamu sudah dicheckout', 400);
         }
 
         $visitor->update([
@@ -139,22 +129,20 @@ class VisitorController extends Controller
             'check_out_time' => now(),
         ]);
 
-        return $this->success($visitor, 'Visitor checked out successfully');
+        return $this->success($visitor, 'Tamu berhasil dicheckout');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Hapus data tamu.
     public function destroy(string $id): JsonResponse
     {
         $visitor = Visitor::find($id);
 
         if (!$visitor) {
-            return $this->error('Visitor not found', 404);
+            return $this->error('Data tamu tidak ditemukan', 404);
         }
 
         $visitor->delete();
 
-        return $this->success(null, 'Visitor deleted successfully');
+        return $this->success(null, 'Data tamu berhasil dihapus');
     }
 }

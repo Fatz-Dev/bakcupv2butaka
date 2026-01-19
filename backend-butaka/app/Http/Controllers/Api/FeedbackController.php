@@ -12,52 +12,44 @@ class FeedbackController extends Controller
 {
     use ApiResponse;
 
-    /**
-     * Display a listing of the resource.
-     */
+    // Data Feedback
     public function index(): JsonResponse
     {
         $feedback = Feedback::latest()->get();
         return $this->success($feedback);
     }
 
-    /**
-     * Store a newly created resource in storage (Submit Feedback).
-     */
+    // Tambah Feedback
     public function store(StoreFeedbackRequest $request): JsonResponse
     {
         $feedback = Feedback::create($request->validated());
 
-        return $this->success($feedback, 'Thank you for your feedback!', 201);
+        return $this->success($feedback, 'Terima kasih telah memberikan umpan balik!', 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Data Feedback spesifik
     public function show(string $id): JsonResponse
     {
         $feedback = Feedback::find($id);
 
         if (!$feedback) {
-            return $this->error('Feedback not found', 404);
+            return $this->error('Feedback tidak ditemukan', 404);
         }
 
         return $this->success($feedback);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Hapus Feedback
     public function destroy(string $id): JsonResponse
     {
         $feedback = Feedback::find($id);
 
         if (!$feedback) {
-            return $this->error('Feedback not found', 404);
+            return $this->error('Feedback tidak ditemukan', 404);
         }
 
         $feedback->delete();
 
-        return $this->success(null, 'Feedback deleted successfully');
+        return $this->success(null, 'Feedback berhasil dihapus');
     }
 }

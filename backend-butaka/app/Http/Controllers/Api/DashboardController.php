@@ -14,9 +14,7 @@ class DashboardController extends Controller
 {
     use ApiResponse;
 
-    /**
-     * Get dashboard statistics
-     */
+    // statistik dashboard
     public function stats(): JsonResponse
     {
         $stats = [
@@ -32,18 +30,14 @@ class DashboardController extends Controller
         return $this->success($stats);
     }
 
-    /**
-     * Get recent visitors
-     */
+    // visitor terbaru
     public function recentVisitors(): JsonResponse
     {
-        $visitors = Visitor::latest()->take(5)->get();
+        $visitors = Visitor::latest()->get();
         return $this->success($visitors);
     }
 
-    /**
-     * Get rating breakdown for charts
-     */
+    // breakdown rating untuk chart
     public function ratingBreakdown(): JsonResponse
     {
         $breakdown = Feedback::select('rating', DB::raw('count(*) as count'))
@@ -54,9 +48,7 @@ class DashboardController extends Controller
         return $this->success($breakdown);
     }
 
-    /**
-     * Get visitor trends (last 7 days)
-     */
+    // trend visitor selama terakhir 7 hari
     public function visitorTrends(): JsonResponse
     {
         $trends = Visitor::select(

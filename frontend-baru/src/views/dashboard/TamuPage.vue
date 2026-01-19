@@ -5,7 +5,7 @@
         <div class="card shadow-sm">
           <div class="card-header d-flex justify-content-between align-items-center py-3">
             <h5 class="mb-0">
-              <i class="fa-solid fa-users me-2"></i>Daftar Tamu Hari Ini
+              <i class="fa-solid fa-users me-2"></i>Daftar Tamu
             </h5>
             <router-link to="/dashboard/tamu/tambah" class="btn btn-primary btn-sm">
               <i class="fa-solid fa-user-plus me-1"></i> Registrasi Tamu Baru
@@ -63,15 +63,29 @@
 
 <script setup>
 import { ref } from 'vue';
+import swal from '@/lib/swal';
+import { useToast } from "@/components/ui/toast/use-toast";
+
+const { toast } = useToast();
 
 const tamuList = ref([
   { id: 1, nama: 'Budi Santoso', instansi: 'PT. Maju Jaya', keperluan: 'Meeting dengan HRD', waktuMasuk: '08:00 WIB', status: 'selesai' },
   { id: 2, nama: 'Siti Aminah', instansi: 'Individu', keperluan: 'Mengantar Paket', waktuMasuk: '09:30 WIB', status: 'berkunjung' }
 ]);
 
-const confirmDelete = (tamu) => {
-  if (confirm(`Hapus tamu "${tamu.nama}"?`)) {
+const confirmDelete = async (tamu) => {
+  const result = await swal.confirm(
+    `Hapus tamu "${tamu.nama}"?`,
+    "Data ini akan dihapus secara permanen.",
+    "Ya, Hapus!"
+  );
+
+  if (result.isConfirmed) {
     tamuList.value = tamuList.value.filter(t => t.id !== tamu.id);
+    toast({
+      title: "Berhasil!",
+      description: `Data tamu "${tamu.nama}" telah dihapus.`,
+    });
   }
 };
 </script>

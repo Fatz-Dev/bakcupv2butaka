@@ -15,53 +15,51 @@ class UserController extends Controller
 {
     use ApiResponse;
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): JsonResponse
+    // Data user. 
+    public function index(Request $request): JsonResponse
     {
-        $users = User::latest()->get();
+        $query = User::latest();
+
+        if ($request->has('role')) {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->get();
         return $this->success($users);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Tambah user baru.
     public function store(RegisterUserRequest $request): JsonResponse
     {
-        // Reuse RegisterUserRequest validation logic
+        // Validasi data
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_active'] = true;
 
         $user = User::create($validated);
 
-        return $this->success($user, 'User created successfully', 201);
+        return $this->success($user, 'User berhasil ditambahkan', 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Data user spesifik.
     public function show(string $id): JsonResponse
     {
         $user = User::find($id);
 
         if (!$user) {
-            return $this->error('User not found', 404);
+            return $this->error('User tidak ditemukan', 404);
         }
 
         return $this->success($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update user.
     public function update(Request $request, string $id): JsonResponse
     {
         $user = User::find($id);
 
         if (!$user) {
-            return $this->error('User not found', 404);
+            return $this->error('User tidak ditemukan', 404);
         }
 
         $validated = $request->validate([
@@ -80,26 +78,24 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return $this->success($user, 'User updated successfully');
+        return $this->success($user, 'User berhasil diupdate');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Hapus User
     public function destroy(string $id): JsonResponse
     {
         $user = User::find($id);
 
         if (!$user) {
-            return $this->error('User not found', 404);
+            return $this->error('User tidak ditemukan', 404);
         }
 
         if ($user->id === auth()->id()) {
-            return $this->error('You cannot delete yourself', 400);
+            return $this->error('Anda tidak dapat menghapus diri sendiri', 400);
         }
 
         $user->delete();
 
-        return $this->success(null, 'User deleted successfully');
+        return $this->success(null, 'User berhasil dihapus');
     }
 }

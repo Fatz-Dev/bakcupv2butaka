@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         // Check if user is active
         if (!$user->is_active) {
-            return $this->error('Your account is inactive', 403);
+            return $this->error('Akun tidak aktif', 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -41,73 +41,61 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
-        ], 'Login successful');
+        ], 'Login Berhasil');
     }
 
-    /**
-     * Register new user (Admin only)
-     */
+    // new user (Admin only)
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = true; // Default active
+        $validated['is_active'] = true; // Default nya active
 
         $user = User::create($validated);
 
-        return $this->success($user, 'User registered successfully', 201);
+        return $this->success($user, 'User berhasil dibuat', 201);
     }
 
-    /**
-     * Logout user (Revoke token)
-     */
+    // Logout user 
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
 
-        return $this->success(null, 'Logged out successfully');
+        return $this->success(null, 'Logout berhasil');
     }
 
-    /**
-     * Get authenticated user
-     */
+    // Mendapatkan data user yang sedang login 
     public function me(Request $request): JsonResponse
     {
         return $this->success($request->user());
     }
 
-    /**
-     * Update user profile
-     */
+    // Update profile
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
         $user->update($request->validated());
 
-        return $this->success($user, 'Profile updated successfully');
+        return $this->success($user, 'Profile berhasil diperbarui');
     }
 
-    /**
-     * Change password
-     */
+    // Change password
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
         $user = $request->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return $this->error('Current password does not match', 400);
+            return $this->error('Password lama tidak sesuai', 400);
         }
 
         $user->update([
             'password' => Hash::make($request->new_password)
         ]);
 
-        return $this->success(null, 'Password changed successfully');
+        return $this->success(null, 'Password berhasil diubah');
     }
 
-    /**
-     * Upload avatar
-     */
+    // Upload avatar / foto profile
     public function uploadAvatar(Request $request): JsonResponse
     {
         $request->validate([
@@ -117,7 +105,7 @@ class AuthController extends Controller
         $user = $request->user();
 
         if ($request->hasFile('avatar')) {
-            // Delete old avatar if exists
+            // Hapus avatar lama jika ada 
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
@@ -125,9 +113,9 @@ class AuthController extends Controller
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->update(['avatar' => $path]);
 
-            return $this->success(['avatar_url' => asset('storage/' . $path)], 'Avatar uploaded successfully');
+            return $this->success(['avatar_url' => asset('storage/' . $path)], 'Avatar berhasil diunggah');
         }
 
-        return $this->error('No file uploaded', 400);
+        return $this->error('Tidak ada file yang diunggah', 400);
     }
 }

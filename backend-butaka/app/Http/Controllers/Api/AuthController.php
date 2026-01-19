@@ -20,7 +20,7 @@ class AuthController extends Controller
     use ApiResponse;
 
     /**
-     * Login user and create token
+     * Login user and buat token
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        // Check if user is active
+        // cek user aktif atau tidak
         if (!$user->is_active) {
             return $this->error('Akun tidak aktif', 403);
         }
